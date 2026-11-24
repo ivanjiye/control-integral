@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control Integral — Finanzas, Tiempo y Pendientes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+    .hidden { display: none !important; }
+    .bg-white { background-color: #ffffff; }
+    .bg-slate-50 { background-color: #f8fafc; }
+    .bg-slate-100 { background-color: #f1f5f9; }
+    .bg-slate-900 { background-color: #0f172a; }
+    .bg-indigo-50 { background-color: #eef2ff; }
+    .bg-indigo-600 { background-color: #4f46e5; }
+    .bg-indigo-600:hover { background-color: #4338ca; }
+    .bg-emerald-50 { background-color: #ecfdf5; }
+    .bg-emerald-100 { background-color: #d1fae5; }
+    .bg-emerald-500 { background-color: #10b981; }
+    .bg-emerald-600 { background-color: #059669; }
+    .bg-emerald-600:hover { background-color: #047857; }
+    .bg-rose-50 { background-color: #fff1f2; }
+    .bg-rose-100 { background-color: #ffe4e6; }
+    .bg-rose-500 { background-color: #f43f5e; }
+    .bg-rose-600 { background-color: #e11d48; }
+    .bg-rose-600:hover { background-color: #be123c; }
+    .bg-sky-50 { background-color: #f0f9ff; }
+    .bg-sky-100 { background-color: #e0f2fe; }
+    .bg-sky-600 { background-color: #0284c7; }
+    .bg-sky-600:hover { background-color: #0369a1; }
+    .bg-amber-50 { background-color: #fffbeb; }
+    .bg-amber-100 { background-color: #fef3c7; }
+    .bg-amber-500 { background-color: #f59e0b; }
+    .bg-amber-600 { background-color: #d97706; }
+    .bg-amber-600:hover { background-color: #b45309; }
+
+    .text-white { color: #ffffff; }
+    .text-slate-400 { color: #94a3b8; }
+    .text-slate-500 { color: #64748b; }
+    .text-slate-600 { color: #475569; }
+    .text-slate-700 { color: #334155; }
+    .text-slate-800 { color: #1e293b; }
+    .text-slate-900 { color: #0f172a; }
+    .text-indigo-400 { color: #818cf8; }
+    .text-indigo-600 { color: #4f46e5; }
+    .text-indigo-700 { color: #4338ca; }
+    .text-emerald-400 { color: #34d399; }
+    .text-emerald-600 { color: #059669; }
+    .text-emerald-700 { color: #047857; }
+    .text-rose-600 { color: #e11d48; }
+    .text-rose-700 { color: #be123c; }
+    .text-sky-600 { color: #0284c7; }
+    .text-sky-700 { color: #0369a1; }
+    .text-amber-600 { color: #d97706; }
+    .text-amber-700 { color: #b45309; }
+
+    .border { border: 1px solid #e2e8f0; }
+    .border-b { border-bottom: 1px solid #e2e8f0; }
+    .border-slate-200 { border-color: #e2e8f0; }
+    .border-slate-300 { border-color: #cbd5e1; }
+    .border-amber-200 { border-color: #fde68a; }
+    .border-emerald-200 { border-color: #a7f3d0; }
+
+    .rounded-md { border-radius: 0.375rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-full { border-radius: 9999px; }
+
+    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+
+    header { position: sticky; top: 0; z-index: 30; }
+    header > div, main { max-width: 80rem; margin: 0 auto; width: 100%; }
+    header > div { padding: 0.875rem 1.25rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    main { padding: 1.5rem 1.25rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .gap-1\.5 { gap: 0.375rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-2\.5 { gap: 0.625rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-6 { gap: 1.5rem; }
+
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (min-width: 640px) {
+      .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .lg\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .lg\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .lg\:col-span-2 { grid-column: span 2 / span 2; }
+  }
+
+    .p-1 { padding: 0.25rem; }
+    .p-1\.5 { padding: 0.375rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-3\.5 { padding: 0.875rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-3\.5 { padding-left: 0.875rem; padding-right: 0.875rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+
+    .m-0 { margin: 0; }
+    .mt-0\.5 { margin-top: 0.125rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mr-1 { margin-right: 0.25rem; }
+    .mr-1\.5 { margin-right: 0.375rem; }
+    .pt-2 { padding-top: 0.5rem; }
+
+    .space-y-1\.5 > * + * { margin-top: 0.375rem; }
+    .space-y-2\.5 > * + * { margin-top: 0.625rem; }
+    .space-y-3 > * + * { margin-top: 0.75rem; }
+    .space-y-4 > * + * { margin-top: 1rem; }
+    .space-y-6 > * + * { margin-top: 1.5rem; }
+
+    .w-2 { width: 0.5rem; }
+    .h-2 { height: 0.5rem; }
+    .w-5 { width: 1.25rem; }
+    .h-5 { height: 1.25rem; }
+    .w-6 { width: 1.5rem; }
+    .h-6 { height: 1.5rem; }
+    .w-8 { width: 2rem; }
+    .h-8 { height: 2rem; }
+    .w-10 { width: 2.5rem; }
+    .h-10 { height: 2.5rem; }
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+    .h-fit { height: fit-content; }
+
+    .text-\[10px\] { font-size: 0.65rem; }
+    .text-\[11px\] { font-size: 0.7rem; }
+    .text-xs { font-size: 0.75rem; }
+    .text-sm { font-size: 0.875rem; }
+    .text-base { font-size: 1rem; }
+    .text-lg { font-size: 1.125rem; }
+    .text-xl { font-size: 1.25rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-normal { font-weight: 400; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .font-extrabold { font-weight: 800; }
+    .uppercase { text-transform: uppercase; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .line-through { text-decoration: line-through; }
+    .whitespace-nowrap { white-space: nowrap; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .overflow-hidden { overflow: hidden; }
+    .overflow-x-auto { overflow-x: auto; }
+    .overflow-y-auto { overflow-y: auto; }
+
+    button { cursor: pointer; border: none; font-family: inherit; }
+    input, select, textarea {
+      font-family: inherit;
+      color: #0f172a;
+      background-color: #ffffff;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #4f46e5;
+      border-color: #4f46e5;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    tbody tr { border-top: 1px solid #f1f5f9; }
+    .divide-y > * + * { border-top: 1px solid #f1f5f9; }
+
+    #dbModal, #bancosModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    #dbModal > div, #bancosModal > div {
+      background: #ffffff;
+      border-radius: 1rem;
+      max-width: 36rem;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35);
+    }
+    #toast {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      z-index: 9999;
+      transition: all 0.25s ease;
+    }
+    .opacity-0 { opacity: 0; pointer-events: none; }
+    .translate-y-4 { transform: translateY(1rem); }
+  </style>
+  <script>
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Encabezado Principal -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-sm">
+          <i class="fa-solid fa-layer-group text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">Control Integral</h1>
+          <p class="text-xs text-slate-500">1. Ingresos · 2. Egresos · 3. Tiempo · 4. Pendientes</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div id="dbStatusBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+          <span id="dbStatusDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span id="dbStatusText">Memoria Local (Gratis)</span>
+        </div>
+
+        <button onclick="openDbModal()" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition flex items-center gap-2 shadow-sm">
+          <i class="fa-solid fa-database"></i>
+          <span>Base de Datos Nube</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- Tarjetas Resumen (KPIs) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase text-slate-400">Dinero que entra</span>
+          <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <i class="fa-solid fa-arrow-trend-up text-sm"></i>
+          </span>
+        </div>
+        <p id="kpiEntra" class="text-2xl font-extrabold text-emerald-600 mt-2">$0</p>
+        <p class="text-xs text-slate-400 mt-1">Escuela y Clientes</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase text-slate-400">Dinero que sale</span>
+          <span class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
+            <i class="fa-solid fa-arrow-trend-down text-sm"></i>
+          </span>
+        </div>
+        <p id="kpiSale" class="text-2xl font-extrabold text-rose-600 mt-2">$0</p>
+        <p class="text-xs text-slate-400 mt-1">5 rubros controlados</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase text-slate-400">Balance Neto</span>
+          <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <i class="fa-solid fa-scale-balanced text-sm"></i>
+          </span>
+        </div>
+        <p id="kpiBalance" class="text-2xl font-extrabold text-slate-900 mt-2">$0</p>
+        <p class="text-xs text-slate-400 mt-1">Entradas menos salidas</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase text-slate-400">Tiempo Hoy</span>
+          <span class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+            <i class="fa-solid fa-clock text-sm"></i>
+          </span>
+        </div>
+        <p id="kpiTiempoHoy" class="text-2xl font-extrabold text-sky-600 mt-2">0.0 h</p>
+        <p id="kpiTiempoAcum" class="text-xs text-slate-400 mt-1">Acumulado: 0.0 h</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase text-slate-400">Pendientes</span>
+          <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+            <i class="fa-solid fa-list-check text-sm"></i>
+          </span>
+        </div>
+        <p id="kpiPendientes" class="text-2xl font-extrabold text-amber-600 mt-2">0</p>
+        <p id="kpiPendientesHoy" class="text-xs text-slate-400 mt-1">0 para hoy o vencidos</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm cursor-pointer hover:border-indigo-300 transition" onclick="openBancosModal()" title="Haz clic para ver discriminación de Caja, Bancos y Bolsillos">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase text-slate-400">Total Caja y Bancos</span>
+          <button type="button" onmouseenter="openBancosModal()" onclick="event.stopPropagation(); openBancosModal();" title="Ver discriminación de caja, bancos y bolsillos" class="w-8 h-8 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-600 flex items-center justify-center transition">
+            <i class="fa-solid fa-building-columns text-sm"></i>
+          </button>
+        </div>
+        <p id="kpiBancosTotal" class="text-2xl font-extrabold text-indigo-600 mt-2">$0</p>
+        <p id="kpiFijosPend" class="text-xs text-slate-400 mt-1">Caja: $0 · Fijos: $0</p>
+      </div>
+    </section>
+
+    <!-- Pestañas de Navegación (4 Rubros + Saldos y Fijos) -->
+    <nav class="bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm grid grid-cols-2 lg:grid-cols-5 gap-1.5">
+      <button onclick="switchTab('ingresos')" id="tab-ingresos" class="tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 text-white flex items-center justify-center gap-2 transition">
+        <i class="fa-solid fa-coins"></i>
+        <span>1. Dinero que entra</span>
+      </button>
+      <button onclick="switchTab('egresos')" id="tab-egresos" class="tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 flex items-center justify-center gap-2 transition">
+        <i class="fa-solid fa-receipt"></i>
+        <span>2. Dinero que sale</span>
+      </button>
+      <button onclick="switchTab('tiempo')" id="tab-tiempo" class="tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 flex items-center justify-center gap-2 transition">
+        <i class="fa-solid fa-hourglass-half"></i>
+        <span>3. Uso diario del tiempo</span>
+      </button>
+      <button onclick="switchTab('pendientes')" id="tab-pendientes" class="tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 flex items-center justify-center gap-2 transition">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>4. Pendientes</span>
+      </button>
+      <button onclick="switchTab('saldos')" id="tab-saldos" class="tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 flex items-center justify-center gap-2 transition col-span-2 lg:col-span-1">
+        <i class="fa-solid fa-wallet"></i>
+        <span>5. Bancos y Fijos</span>
+      </button>
+    </nav>
+
+    <!-- RUBRO 1: DINERO QUE ENTRA -->
+    <section id="panel-ingresos" class="tab-panel grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm h-fit">
+        <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-extrabold">1</span>
+          Registrar Dinero que Entra
+        </h2>
+        <form onsubmit="addIngreso(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha</label>
+              <input type="date" id="ingFecha" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Origen</label>
+              <select id="ingOrigen" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="Escuela">Escuela</option>
+                <option value="Clientes">Clientes</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Concepto</label>
+              <input type="text" id="ingConcepto" required placeholder="Ej. Pago mensualidad, servicio..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">¿A dónde entra?</label>
+              <select id="ingCuenta" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="caja_disp">Caja (Efectivo)</option>
+                <option value="bancolombia_disp">Bancolombia</option>
+                <option value="nu_disp">Banco NU</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Monto (COP)</label>
+            <input type="text" inputmode="numeric" id="ingMonto" oninput="formatMilesInput(this)" required placeholder="0" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-sm transition">
+            <i class="fa-solid fa-plus mr-1.5"></i> Guardar Entrada
+          </button>
+        </form>
+      </div>
+
+      <div class="lg:col-span-2 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700">Escuela</span>
+              <span id="pctIngEscuela" class="text-slate-500">0%</span>
+            </div>
+            <p id="sumIngEscuela" class="text-xl font-extrabold text-slate-900 mt-2">$0</p>
+            <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+              <div id="barIngEscuela" class="bg-indigo-600 h-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">Clientes</span>
+              <span id="pctIngClientes" class="text-slate-500">0%</span>
+            </div>
+            <p id="sumIngClientes" class="text-xl font-extrabold text-slate-900 mt-2">$0</p>
+            <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+              <div id="barIngClientes" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2">
+            <h3 class="text-sm font-bold text-slate-800">Historial de Dinero que Entra</h3>
+            <select id="filtroIngOrigen" onchange="renderIngresos()" class="text-xs rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white">
+              <option value="TODOS">Todos</option>
+              <option value="Escuela">Escuela</option>
+              <option value="Clientes">Clientes</option>
+            </select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200">
+                  <th class="py-3 px-4 font-semibold">Fecha</th>
+                  <th class="py-3 px-4 font-semibold">Origen</th>
+                  <th class="py-3 px-4 font-semibold">Destino</th>
+                  <th class="py-3 px-4 font-semibold">Concepto</th>
+                  <th class="py-3 px-4 font-semibold text-right">Monto</th>
+                  <th class="py-3 px-4 font-semibold text-center">Borrar</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyIngresos" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RUBRO 2: DINERO QUE SALE -->
+    <section id="panel-egresos" class="tab-panel hidden grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm h-fit">
+        <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-rose-100 text-rose-700 text-xs flex items-center justify-center font-extrabold">2</span>
+          Registrar Dinero que Sale
+        </h2>
+        <form onsubmit="addEgreso(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha</label>
+              <input type="date" id="egrFecha" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Rubro</label>
+              <select id="egrRubro" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-rose-500">
+                <option value="Hijas">Hijas</option>
+                <option value="Mamá">Mamá</option>
+                <option value="Personal">Personal</option>
+                <option value="Inversión escuela">Inversión escuela</option>
+                <option value="Paulina">Paulina</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Concepto</label>
+              <input type="text" id="egrConcepto" required placeholder="Ej. Útiles, apoyo, insumos..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">¿De dónde sale?</label>
+              <select id="egrCuenta" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-rose-500">
+                <option value="caja_disp">Caja (Efectivo)</option>
+                <option value="bancolombia_disp">Bancolombia</option>
+                <option value="nu_disp">Banco NU</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Monto (COP)</label>
+            <input type="text" inputmode="numeric" id="egrMonto" oninput="formatMilesInput(this)" required placeholder="0" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500">
+          </div>
+          <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold shadow-sm transition">
+            <i class="fa-solid fa-plus mr-1.5"></i> Guardar Salida
+          </button>
+        </form>
+      </div>
+
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
+          <h3 class="text-sm font-bold text-slate-800">Salidas por Rubro</h3>
+          <div id="egresosRubrosBars" class="space-y-2.5"></div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2">
+            <h3 class="text-sm font-bold text-slate-800">Historial de Dinero que Sale</h3>
+            <select id="filtroEgrRubro" onchange="renderEgresos()" class="text-xs rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white">
+              <option value="TODOS">Todos los rubros</option>
+              <option value="Hijas">Hijas</option>
+              <option value="Mamá">Mamá</option>
+              <option value="Personal">Personal</option>
+              <option value="Inversión escuela">Inversión escuela</option>
+              <option value="Paulina">Paulina</option>
+            </select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200">
+                  <th class="py-3 px-4 font-semibold">Fecha</th>
+                  <th class="py-3 px-4 font-semibold">Rubro</th>
+                  <th class="py-3 px-4 font-semibold">Cuenta</th>
+                  <th class="py-3 px-4 font-semibold">Concepto</th>
+                  <th class="py-3 px-4 font-semibold text-right">Monto</th>
+                  <th class="py-3 px-4 font-semibold text-center">Borrar</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyEgresos" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RUBRO 3: USO DIARIO DEL TIEMPO POR HORA -->
+    <section id="panel-tiempo" class="tab-panel hidden grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm h-fit">
+        <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-sky-100 text-sky-700 text-xs flex items-center justify-center font-extrabold">3</span>
+          Uso Diario del Tiempo por Hora
+        </h2>
+        <form onsubmit="addTiempo(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha</label>
+              <input type="date" id="tieFecha" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Rubro / Actividad</label>
+              <select id="tieActividad" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+                <option value="Escuela">Escuela</option>
+                <option value="Contatool">Contatool</option>
+                <option value="Clientes">Clientes</option>
+                <option value="Ocio">Ocio</option>
+                <option value="Descanso">Descanso</option>
+                <option value="Paulina">Paulina</option>
+                <option value="Hijas">Hijas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Hora Inicio</label>
+              <input type="time" id="tieInicio" onchange="calcularHorasRango()" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Hora Fin</label>
+              <input type="time" id="tieFin" onchange="calcularHorasRango()" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Horas</label>
+            <input type="number" id="tieHoras" required min="0.1" max="24" step="0.1" placeholder="Ej. 2.0" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Nota (Opcional)</label>
+            <input type="text" id="tieNota" placeholder="Detalle de la actividad..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+          </div>
+
+          <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold shadow-sm transition">
+            <i class="fa-solid fa-plus mr-1.5"></i> Registrar Tiempo
+          </button>
+        </form>
+      </div>
+
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-sm font-bold text-slate-800">Horas por Rubro</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-500">Día:</span>
+              <input type="date" id="tieDiaResumen" onchange="renderTiempo()" class="text-xs rounded-lg border border-slate-300 px-2.5 py-1 bg-white">
+            </div>
+          </div>
+          <div id="tiempoCardsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5"></div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2">
+            <h3 class="text-sm font-bold text-slate-800">Registro Diario de Tiempo</h3>
+            <select id="filtroTieAct" onchange="renderTiempo()" class="text-xs rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white">
+              <option value="TODAS">Todos</option>
+              <option value="Escuela">Escuela</option>
+              <option value="Contatool">Contatool</option>
+              <option value="Clientes">Clientes</option>
+              <option value="Ocio">Ocio</option>
+              <option value="Descanso">Descanso</option>
+              <option value="Paulina">Paulina</option>
+              <option value="Hijas">Hijas</option>
+            </select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200">
+                  <th class="py-3 px-4 font-semibold">Fecha</th>
+                  <th class="py-3 px-4 font-semibold">Rubro</th>
+                  <th class="py-3 px-4 font-semibold">Rango</th>
+                  <th class="py-3 px-4 font-semibold text-right">Horas</th>
+                  <th class="py-3 px-4 font-semibold">Nota</th>
+                  <th class="py-3 px-4 font-semibold text-center">Borrar</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyTiempo" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RUBRO 4: LISTA DE PENDIENTES CON FECHA DE EJECUCIÓN -->
+    <section id="panel-pendientes" class="tab-panel hidden grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm h-fit">
+        <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-xs flex items-center justify-center font-extrabold">4</span>
+          Nuevo Pendiente
+        </h2>
+        <form onsubmit="addPendiente(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Pendiente / Tarea</label>
+            <input type="text" id="penTarea" required placeholder="Ej. Llamar a cliente, preparar clase..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha de Ejecución</label>
+              <input type="date" id="penFecha" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Rubro</label>
+              <select id="penRubro" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <option value="Escuela">Escuela</option>
+                <option value="Contatool">Contatool</option>
+                <option value="Clientes">Clientes</option>
+                <option value="Personal">Personal</option>
+                <option value="Hijas">Hijas</option>
+                <option value="Mamá">Mamá</option>
+                <option value="Paulina">Paulina</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold shadow-sm transition">
+            <i class="fa-solid fa-plus mr-1.5"></i> Agregar Pendiente
+          </button>
+        </form>
+      </div>
+
+      <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-sm font-bold text-slate-800">Lista de Pendientes por Fecha de Ejecución</h3>
+          <div class="flex items-center gap-2">
+            <button onclick="setFiltroPend('ACTIVOS')" id="btnPenActivos" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">Activos</button>
+            <button onclick="setFiltroPend('HECHOS')" id="btnPenHechos" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-600">Completados</button>
+          </div>
+        </div>
+        <div id="listaPendientes" class="divide-y divide-slate-100"></div>
+      </div>
+    </section>
+
+    <!-- RUBRO 5: SALDOS EN BANCOS (BANCOLOMBIA + BOLSILLOS, BANCO NU) Y PAGOS FIJOS -->
+    <section id="panel-saldos" class="tab-panel hidden grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Columna 1: Bancolombia y sus Bolsillos -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 h-fit">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-extrabold">
+              <i class="fa-solid fa-vault"></i>
+            </span>
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Bancolombia</h2>
+              <p class="text-[11px] text-slate-500">Disponible + Bolsillos</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">Total Bancolombia</span>
+            <span id="totalBancolombia" class="text-base font-extrabold text-amber-600">$0</span>
+          </div>
+        </div>
+
+        <!-- Saldo Disponible Principal Bancolombia -->
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Saldo Disponible (Sin bolsillos)</label>
+          <div class="flex gap-2">
+            <input type="text" inputmode="numeric" id="bancolombiaDispInput" oninput="formatMilesInput(this)" placeholder="0" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-bold">
+            <button type="button" onclick="saveBancolombiaDisp()" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold whitespace-nowrap">
+              Guardar
+            </button>
+          </div>
+        </div>
+
+        <!-- Agregar nuevo bolsillo Bancolombia -->
+        <form onsubmit="addBolsillo(event)" class="space-y-2.5 pt-1">
+          <p class="text-xs font-bold text-slate-700">Bolsillos Bancolombia</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="bolsilloNombre" required placeholder="Nombre bolsillo..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+            <input type="text" inputmode="numeric" id="bolsilloMonto" oninput="formatMilesInput(this)" required placeholder="Saldo (COP)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+          </div>
+          <button type="submit" class="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition">
+            <i class="fa-solid fa-plus mr-1"></i> Agregar / Actualizar Bolsillo
+          </button>
+        </form>
+
+        <!-- Lista de Bolsillos -->
+        <div id="listaBolsillos" class="divide-y divide-slate-100 border-t border-slate-200 pt-2"></div>
+      </div>
+
+      <!-- Columna 2: Banco NU y Caja Efectivo -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 h-fit">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-extrabold">
+              <i class="fa-solid fa-credit-card"></i>
+            </span>
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Banco NU y Caja</h2>
+              <p class="text-[11px] text-slate-500">Cuenta NU, Cajitas y Efectivo</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">Total Banco NU</span>
+            <span id="totalBancoNu" class="text-base font-extrabold text-indigo-600">$0</span>
+          </div>
+        </div>
+
+        <div class="bg-emerald-50 p-3.5 rounded-xl border border-emerald-200">
+          <label class="block text-xs font-bold text-emerald-700 mb-1.5">Saldo Caja (Efectivo)</label>
+          <div class="flex gap-2">
+            <input type="text" inputmode="numeric" id="cajaDispInput" oninput="formatMilesInput(this)" placeholder="0" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-bold">
+            <button type="button" onclick="saveCajaDisp()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold whitespace-nowrap">
+              Guardar
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Saldo Cuenta NU (Disponible)</label>
+          <div class="flex gap-2">
+            <input type="text" inputmode="numeric" id="nuDispInput" oninput="formatMilesInput(this)" placeholder="0" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-bold">
+            <button type="button" onclick="saveNuDisp()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold whitespace-nowrap">
+              Guardar
+            </button>
+          </div>
+        </div>
+
+        <form onsubmit="addCajitaNu(event)" class="space-y-2.5 pt-1">
+          <p class="text-xs font-bold text-slate-700">Cajitas NU (Opcional)</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="cajitaNombre" required placeholder="Nombre cajita..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+            <input type="text" inputmode="numeric" id="cajitaMonto" oninput="formatMilesInput(this)" required placeholder="Saldo (COP)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+          </div>
+          <button type="submit" class="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
+            <i class="fa-solid fa-plus mr-1"></i> Agregar Cajita NU
+          </button>
+        </form>
+
+        <div id="listaCajitasNu" class="divide-y divide-slate-100 border-t border-slate-200 pt-2"></div>
+      </div>
+
+      <!-- Columna 3: Cuentas / Pagos Fijos -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 h-fit">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-extrabold">
+              <i class="fa-solid fa-file-invoice-dollar"></i>
+            </span>
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Pagos Fijos</h2>
+              <p class="text-[11px] text-slate-500">Obligaciones mensuales</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">Pendiente por pagar</span>
+            <span id="totalFijosPendiente" class="text-base font-extrabold text-rose-600">$0</span>
+          </div>
+        </div>
+
+        <form onsubmit="addPagoFijo(event)" class="space-y-2.5 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <p class="text-xs font-bold text-slate-700">Agregar obligación fija</p>
+          <input type="text" id="fijoNombre" required placeholder="Ej. Internet, Arriendo..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" inputmode="numeric" id="fijoMonto" oninput="formatMilesInput(this)" required placeholder="Valor (COP)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+            <input type="number" id="fijoDia" min="1" max="31" placeholder="Día límite (1-31)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+          </div>
+          <button type="submit" class="w-full py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition">
+            <i class="fa-solid fa-plus mr-1"></i> Agregar Pago Fijo
+          </button>
+        </form>
+
+        <div class="border-t border-slate-200 pt-2">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-700">Lista del mes</span>
+            <button type="button" onclick="resetMesFijos()" class="text-[11px] font-semibold text-indigo-600 hover:underline">
+              Reiniciar mes (marcar pendientes)
+            </button>
+          </div>
+          <div id="listaPagosFijos" class="divide-y divide-slate-100"></div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL: DISCRIMINACIÓN DE SALDOS EN BANCOS, BOLSILLOS Y CAJA -->
+  <div id="bancosModal" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4" onclick="if(event.target===this) closeBancosModal()">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden" onmouseleave="closeBancosModal()">
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-building-columns text-indigo-400"></i>
+          <h3 class="text-sm sm:text-base font-bold">Discriminación de Saldos y Bolsillos</h3>
+        </div>
+        <button onclick="closeBancosModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div id="bancosModalBody" class="p-5 space-y-4 text-xs sm:text-sm text-slate-700 max-h-[80vh] overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONECTAR BASE DE DATOS GRATUITA EN LA NUBE (FIREBASE FIRESTORE) -->
+  <div id="dbModal" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-cloud-arrow-up text-indigo-400"></i>
+          <h3 class="text-sm sm:text-base font-bold">Base de Datos Gratuita en la Nube (Firestore)</h3>
+        </div>
+        <button onclick="closeDbModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4 text-xs sm:text-sm text-slate-600 max-h-[82vh] overflow-y-auto">
+        <p>
+          Por defecto, la app guarda todo gratis en tu navegador. Si quieres sincronizar en tiempo real entre <strong>PC y celular</strong> usando una base de datos gratuita:
+        </p>
+        <ol class="list-decimal list-inside space-y-1.5 bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs">
+          <li>Crea un proyecto gratis en <a href="https://console.firebase.google.com" target="_blank" class="text-indigo-600 underline font-semibold">console.firebase.google.com</a>.</li>
+          <li>Crea una base de datos <strong>Firestore Database</strong> (en modo prueba para empezar).</li>
+          <li>Ve a <strong>Configuración del proyecto &gt; Tus apps &gt; App web</strong> y pega aquí el objeto <code class="bg-slate-200 px-1 rounded">firebaseConfig</code>.</li>
+        </ol>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Pega aquí tu configuración JSON de Firebase:</label>
+          <textarea id="firebaseConfigInput" rows="6" placeholder='{
+  "apiKey": "AIza...",
+  "authDomain": "tu-proyecto.firebaseapp.com",
+  "projectId": "tu-proyecto",
+  "storageBucket": "tu-proyecto.appspot.com",
+  "messagingSenderId": "123456789",
+  "appId": "1:123456789:web:abcdef"
+}' class="w-full rounded-xl border border-slate-300 p-3 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+          <button onclick="clearFirebaseConfig()" class="px-3.5 py-2 rounded-xl text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 transition">
+            Usar solo navegador
+          </button>
+          <div class="flex gap-2">
+            <button onclick="closeDbModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700">
+              Cerrar
+            </button>
+            <button onclick="saveFirebaseConfig()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm">
+              Conectar Base de Datos
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aviso flotante (Toast) -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-lg border border-slate-700 text-xs sm:text-sm font-semibold flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+    <div>
+      <p class="font-extrabold text-emerald-400 text-xs uppercase tracking-wide">Guardado</p>
+      <p id="toastMsg" class="text-white font-medium">Listo</p>
+    </div>
+  </div>
+
+  <!-- Script Clásico Garantizado (Funciona siempre incluso en file://) -->
+  <script>
+    const LOCAL_KEY = "control_integral_limpio_v1";
+    const FB_CONFIG_KEY = "control_integral_fb_config_v1";
+    const RUBROS_EGRESO = ["Hijas", "Mamá", "Personal", "Inversión escuela", "Paulina"];
+    const RUBROS_TIEMPO = ["Escuela", "Contatool", "Clientes", "Ocio", "Descanso", "Paulina", "Hijas"];
+
+    let filtroPendiente = "ACTIVOS";
+    let data = {
+      ingresos: [],
+      egresos: [],
+      tiempo: [],
+      pendientes: [],
+      bancos: [
+        { id: "caja_disp", saldo: 0 },
+        { id: "bancolombia_disp", saldo: 0 },
+        { id: "nu_disp", saldo: 0 }
+      ],
+      bolsillos: [],
+      cajitasNu: [],
+      pagosFijos: [
+        { id: "fijo_cel_paulina", nombre: "Celular Paulina", monto: 0, dia: 15, pagado: false },
+        { id: "fijo_cel_mio", nombre: "Celular mío", monto: 0, dia: 15, pagado: false },
+        { id: "fijo_tc_nu", nombre: "Deuda Tarjeta Crédito NU", monto: 0, dia: 20, pagado: false }
+      ]
+    };
+
+    const CUENTA_LABELS = {
+      caja_disp: "Caja (Efectivo)",
+      bancolombia_disp: "Bancolombia",
+      nu_disp: "Banco NU"
+    };
+
+    function todayISO() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatMilesStr(val) {
+      const digits = String(val ?? "").replace(/\D/g, "");
+      if (!digits) return "";
+      return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function formatMilesInput(el) {
+      if (!el) return;
+      el.value = formatMilesStr(el.value);
+    }
+
+    function parseMiles(val) {
+      const digits = String(val ?? "").replace(/\D/g, "");
+      return digits ? parseInt(digits, 10) : 0;
+    }
+
+    function openBancosModal() {
+      renderBancosModal();
+      const modal = document.getElementById("bancosModal");
+      if (modal) modal.classList.remove("hidden");
+    }
+
+    function closeBancosModal() {
+      const modal = document.getElementById("bancosModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function computeSaldosConsolidados() {
+      const cajaDisp = Number((data.bancos || []).find(x => x.id === "caja_disp")?.saldo || 0);
+      const bcDisp = Number((data.bancos || []).find(x => x.id === "bancolombia_disp")?.saldo || 0);
+      const bolsillos = data.bolsillos || [];
+      const bcBols = bolsillos.reduce((a, b) => a + Number(b.monto || 0), 0);
+      const totalBc = bcDisp + bcBols;
+
+      const nuDisp = Number((data.bancos || []).find(x => x.id === "nu_disp")?.saldo || 0);
+      const cajitas = data.cajitasNu || [];
+      const nuCaj = cajitas.reduce((a, b) => a + Number(b.monto || 0), 0);
+      const totalNu = nuDisp + nuCaj;
+
+      const totalBancos = totalBc + totalNu;
+      const totalCajaYBancos = totalBancos + cajaDisp;
+
+      return { cajaDisp, bcDisp, bolsillos, bcBols, totalBc, nuDisp, cajitas, nuCaj, totalNu, totalBancos, totalCajaYBancos };
+    }
+
+    function renderBancosModal() {
+      const { cajaDisp, bcDisp, bolsillos, bcBols, totalBc, nuDisp, cajitas, nuCaj, totalNu, totalBancos, totalCajaYBancos } = computeSaldosConsolidados();
+
+      const bolsHtml = bolsillos.length
+        ? bolsillos.map(b => `
+            <div class="flex justify-between items-center text-xs py-1 pl-3 border-l-2 border-amber-200">
+              <span class="text-slate-600"><i class="fa-solid fa-folder text-amber-500 mr-1.5"></i>${escapeHtml(b.nombre)}</span>
+              <span class="font-semibold text-slate-800">${money(b.monto)}</span>
+            </div>
+          `).join("")
+        : `<p class="text-[11px] text-slate-400 pl-3">Sin bolsillos registrados</p>`;
+
+      const cajHtml = cajitas.length
+        ? cajitas.map(c => `
+            <div class="flex justify-between items-center text-xs py-1 pl-3 border-l-2 border-indigo-200">
+              <span class="text-slate-600"><i class="fa-solid fa-piggy-bank text-indigo-500 mr-1.5"></i>${escapeHtml(c.nombre)}</span>
+              <span class="font-semibold text-slate-800">${money(c.monto)}</span>
+            </div>
+          `).join("")
+        : `<p class="text-[11px] text-slate-400 pl-3">Sin cajitas registradas</p>`;
+
+      document.getElementById("bancosModalBody").innerHTML = `
+        <div class="bg-emerald-50 p-3.5 rounded-xl border border-emerald-200 flex justify-between items-center">
+          <span class="font-extrabold text-slate-900 text-sm"><i class="fa-solid fa-money-bill-wave text-emerald-600 mr-1.5"></i>Caja (Efectivo)</span>
+          <span class="font-extrabold text-emerald-700 text-base">${money(cajaDisp)}</span>
+        </div>
+
+        <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="font-extrabold text-slate-900 text-sm"><i class="fa-solid fa-vault text-amber-600 mr-1.5"></i>Bancolombia</span>
+            <span class="font-extrabold text-amber-700 text-base">${money(totalBc)}</span>
+          </div>
+          <div class="flex justify-between items-center text-xs pt-1 border-t border-amber-200">
+            <span class="text-slate-600 font-medium">Saldo Disponible (Sin bolsillos)</span>
+            <span class="font-bold text-slate-800">${money(bcDisp)}</span>
+          </div>
+          <div class="space-y-1 pt-1">
+            <p class="text-[11px] font-bold uppercase text-amber-700">Bolsillos (${money(bcBols)})</p>
+            ${bolsHtml}
+          </div>
+        </div>
+
+        <div class="bg-indigo-50 p-3.5 rounded-xl border border-indigo-200 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="font-extrabold text-slate-900 text-sm"><i class="fa-solid fa-credit-card text-indigo-600 mr-1.5"></i>Banco NU</span>
+            <span class="font-extrabold text-indigo-700 text-base">${money(totalNu)}</span>
+          </div>
+          <div class="flex justify-between items-center text-xs pt-1 border-t border-indigo-200">
+            <span class="text-slate-600 font-medium">Cuenta NU Disponible</span>
+            <span class="font-bold text-slate-800">${money(nuDisp)}</span>
+          </div>
+          <div class="space-y-1 pt-1">
+            <p class="text-[11px] font-bold uppercase text-indigo-700">Cajitas NU (${money(nuCaj)})</p>
+            ${cajHtml}
+          </div>
+        </div>
+
+        <div class="bg-slate-900 text-white p-3.5 rounded-xl space-y-1.5">
+          <div class="flex justify-between items-center text-xs text-slate-300">
+            <span>Subtotal solo Bancos (Bancolombia + NU)</span>
+            <span class="font-bold text-white">${money(totalBancos)}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm font-extrabold pt-1 border-t border-slate-700">
+            <span>Total Caja y Bancos</span>
+            <span class="text-emerald-400 text-base">${money(totalCajaYBancos)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    async function ajustarSaldoCuenta(cuentaId, delta) {
+      if (!cuentaId) return;
+      const existente = (data.bancos || []).find(x => x.id === cuentaId);
+      const saldoActual = Number(existente?.saldo || 0);
+      const nuevoSaldo = Math.max(0, saldoActual + Number(delta || 0));
+      await persistItem("bancos", { id: cuentaId, saldo: nuevoSaldo });
+    }
+
+    function money(n) {
+      return new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        maximumFractionDigits: 0
+      }).format(Number(n) || 0);
+    }
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).substring(2, 7);
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str || "";
+      return div.innerHTML;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      if (!el) return;
+      document.getElementById("toastMsg").textContent = msg;
+      el.classList.remove("opacity-0", "translate-y-4");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        el.classList.add("opacity-0", "translate-y-4");
+      }, 3000);
+    }
+
+    function openDbModal() {
+      const modal = document.getElementById("dbModal");
+      const input = document.getElementById("firebaseConfigInput");
+      if (input) input.value = localStorage.getItem(FB_CONFIG_KEY) || "";
+      if (modal) modal.classList.remove("hidden");
+    }
+
+    function closeDbModal() {
+      const modal = document.getElementById("dbModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll(".tab-panel").forEach(p => {
+        p.classList.add("hidden");
+        p.classList.remove("grid");
+      });
+      const target = document.getElementById("panel-" + tab);
+      if (target) {
+        target.classList.remove("hidden");
+        target.classList.add("grid");
+      }
+
+      document.querySelectorAll(".tab-btn").forEach(b => {
+        b.classList.remove("bg-indigo-600", "text-white");
+        b.classList.add("text-slate-600", "hover:bg-slate-100");
+      });
+      const activeBtn = document.getElementById("tab-" + tab);
+      if (activeBtn) {
+        activeBtn.classList.remove("text-slate-600", "hover:bg-slate-100");
+        activeBtn.classList.add("bg-indigo-600", "text-white");
+      }
+    }
+
+    function saveLocal() {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
+      renderAll();
+    }
+
+    async function persistItem(colName, item) {
+      const idx = data[colName].findIndex(x => x.id === item.id);
+      if (idx >= 0) data[colName][idx] = item;
+      else data[colName].unshift(item);
+      saveLocal();
+
+      if (window._cloudSave) {
+        await window._cloudSave(colName, item);
+      }
+    }
+
+    async function removeItem(colName, id) {
+      const target = (data[colName] || []).find(x => x.id === id);
+      if (target && target.cuenta) {
+        if (colName === "ingresos") {
+          await ajustarSaldoCuenta(target.cuenta, -Number(target.monto || 0));
+        } else if (colName === "egresos") {
+          await ajustarSaldoCuenta(target.cuenta, Number(target.monto || 0));
+        }
+      }
+      data[colName] = data[colName].filter(x => x.id !== id);
+      saveLocal();
+      showToast("Eliminado");
+
+      if (window._cloudDelete) {
+        await window._cloudDelete(colName, id);
+      }
+    }
+
+    async function addIngreso(e) {
+      e.preventDefault();
+      const monto = parseMiles(document.getElementById("ingMonto").value);
+      const cuenta = document.getElementById("ingCuenta").value;
+      const concepto = document.getElementById("ingConcepto").value.trim();
+      const origen = document.getElementById("ingOrigen").value;
+      const item = {
+        id: uid(),
+        fecha: document.getElementById("ingFecha").value,
+        origen,
+        cuenta,
+        concepto,
+        monto
+      };
+      await persistItem("ingresos", item);
+      await ajustarSaldoCuenta(cuenta, monto);
+      document.getElementById("ingConcepto").value = "";
+      document.getElementById("ingMonto").value = "";
+      showToast(`Guardado: Entrada (${origen}) - ${concepto} por ${money(monto)}`);
+    }
+
+    function renderIngresos() {
+      const sumEsc = data.ingresos.filter(x => x.origen === "Escuela").reduce((a, b) => a + Number(b.monto || 0), 0);
+      const sumCli = data.ingresos.filter(x => x.origen === "Clientes").reduce((a, b) => a + Number(b.monto || 0), 0);
+      const tot = sumEsc + sumCli;
+
+      const pEsc = tot > 0 ? Math.round((sumEsc / tot) * 100) : 0;
+      const pCli = tot > 0 ? Math.round((sumCli / tot) * 100) : 0;
+
+      document.getElementById("sumIngEscuela").textContent = money(sumEsc);
+      document.getElementById("pctIngEscuela").textContent = pEsc + "%";
+      document.getElementById("barIngEscuela").style.width = pEsc + "%";
+
+      document.getElementById("sumIngClientes").textContent = money(sumCli);
+      document.getElementById("pctIngClientes").textContent = pCli + "%";
+      document.getElementById("barIngClientes").style.width = pCli + "%";
+
+      const filtro = document.getElementById("filtroIngOrigen").value;
+      const rows = data.ingresos
+        .filter(x => filtro === "TODOS" || x.origen === filtro)
+        .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
+
+      const tbody = document.getElementById("tbodyIngresos");
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-xs text-slate-400">Sin registros de entradas.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 text-xs text-slate-500 whitespace-nowrap">${r.fecha}</td>
+          <td class="py-3 px-4 whitespace-nowrap">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${r.origen === "Escuela" ? "bg-indigo-50 text-indigo-700" : "bg-emerald-50 text-emerald-700"}">${r.origen}</span>
+          </td>
+          <td class="py-3 px-4 whitespace-nowrap text-xs font-semibold text-slate-600">
+            ${CUENTA_LABELS[r.cuenta] || "Sin asignar"}
+          </td>
+          <td class="py-3 px-4 font-medium text-slate-800">${escapeHtml(r.concepto)}</td>
+          <td class="py-3 px-4 text-right font-bold text-emerald-600 whitespace-nowrap">${money(r.monto)}</td>
+          <td class="py-3 px-4 text-center">
+            <button onclick="removeItem('ingresos', '${r.id}')" class="text-slate-400 hover:text-rose-600 p-1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    async function addEgreso(e) {
+      e.preventDefault();
+      const monto = parseMiles(document.getElementById("egrMonto").value);
+      const cuenta = document.getElementById("egrCuenta").value;
+      const concepto = document.getElementById("egrConcepto").value.trim();
+      const rubro = document.getElementById("egrRubro").value;
+      const item = {
+        id: uid(),
+        fecha: document.getElementById("egrFecha").value,
+        rubro,
+        cuenta,
+        concepto,
+        monto
+      };
+      await persistItem("egresos", item);
+      await ajustarSaldoCuenta(cuenta, -monto);
+      document.getElementById("egrConcepto").value = "";
+      document.getElementById("egrMonto").value = "";
+      showToast(`Guardado: Salida (${rubro}) - ${concepto} por ${money(monto)}`);
+    }
+
+    function renderEgresos() {
+      const totalEgr = data.egresos.reduce((a, b) => a + Number(b.monto || 0), 0);
+      const bars = document.getElementById("egresosRubrosBars");
+
+      bars.innerHTML = RUBROS_EGRESO.map(rubro => {
+        const sub = data.egresos.filter(x => x.rubro === rubro).reduce((a, b) => a + Number(b.monto || 0), 0);
+        const pct = totalEgr > 0 ? Math.round((sub / totalEgr) * 100) : 0;
+        return `
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-semibold text-slate-700">${rubro}</span>
+              <span class="font-bold text-slate-900">${money(sub)} <span class="text-slate-400 font-normal">(${pct}%)</span></span>
+            </div>
+            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+              <div class="bg-rose-500 h-full transition-all duration-300" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const filtro = document.getElementById("filtroEgrRubro").value;
+      const rows = data.egresos
+        .filter(x => filtro === "TODOS" || x.rubro === filtro)
+        .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
+
+      const tbody = document.getElementById("tbodyEgresos");
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-xs text-slate-400">Sin registros de salidas.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 text-xs text-slate-500 whitespace-nowrap">${r.fecha}</td>
+          <td class="py-3 px-4 whitespace-nowrap">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700">${r.rubro}</span>
+          </td>
+          <td class="py-3 px-4 whitespace-nowrap text-xs font-semibold text-slate-600">
+            ${CUENTA_LABELS[r.cuenta] || "Sin asignar"}
+          </td>
+          <td class="py-3 px-4 font-medium text-slate-800">${escapeHtml(r.concepto)}</td>
+          <td class="py-3 px-4 text-right font-bold text-rose-600 whitespace-nowrap">${money(r.monto)}</td>
+          <td class="py-3 px-4 text-center">
+            <button onclick="removeItem('egresos', '${r.id}')" class="text-slate-400 hover:text-rose-600 p-1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function calcularHorasRango() {
+      const ini = document.getElementById("tieInicio").value;
+      const fin = document.getElementById("tieFin").value;
+      if (!ini || !fin) return;
+      const [h1, m1] = ini.split(":").map(Number);
+      const [h2, m2] = fin.split(":").map(Number);
+      let mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+      if (mins < 0) mins += 24 * 60;
+      if (mins > 0) {
+        document.getElementById("tieHoras").value = (mins / 60).toFixed(1);
+      }
+    }
+
+    async function addTiempo(e) {
+      e.preventDefault();
+      const actividad = document.getElementById("tieActividad").value;
+      const horas = parseFloat(document.getElementById("tieHoras").value) || 0;
+      const item = {
+        id: uid(),
+        fecha: document.getElementById("tieFecha").value,
+        actividad,
+        inicio: document.getElementById("tieInicio").value || "",
+        fin: document.getElementById("tieFin").value || "",
+        horas,
+        nota: document.getElementById("tieNota").value.trim()
+      };
+      await persistItem("tiempo", item);
+      document.getElementById("tieInicio").value = "";
+      document.getElementById("tieFin").value = "";
+      document.getElementById("tieHoras").value = "";
+      document.getElementById("tieNota").value = "";
+      showToast(`Guardado: Tiempo en ${actividad} (${horas.toFixed(1)} h)`);
+    }
+
+    function renderTiempo() {
+      const dia = document.getElementById("tieDiaResumen").value || todayISO();
+      const grid = document.getElementById("tiempoCardsGrid");
+
+      grid.innerHTML = RUBROS_TIEMPO.map(act => {
+        const hDia = data.tiempo.filter(x => x.actividad === act && x.fecha === dia).reduce((a, b) => a + Number(b.horas || 0), 0);
+        const hTot = data.tiempo.filter(x => x.actividad === act).reduce((a, b) => a + Number(b.horas || 0), 0);
+        return `
+          <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <p class="text-xs font-bold text-slate-700 truncate">${act}</p>
+            <p class="text-lg font-extrabold text-sky-600 mt-1">${hDia.toFixed(1)} h</p>
+            <p class="text-[11px] text-slate-400">Total: ${hTot.toFixed(1)} h</p>
+          </div>
+        `;
+      }).join("");
+
+      const filtro = document.getElementById("filtroTieAct").value;
+      const rows = data.tiempo
+        .filter(x => filtro === "TODAS" || x.actividad === filtro)
+        .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
+
+      const tbody = document.getElementById("tbodyTiempo");
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-xs text-slate-400">Sin registros de tiempo.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => {
+        const rango = (r.inicio && r.fin) ? `${r.inicio} - ${r.fin}` : "Manual";
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-3 px-4 text-xs text-slate-500 whitespace-nowrap">${r.fecha}</td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700">${r.actividad}</span>
+            </td>
+            <td class="py-3 px-4 text-xs text-slate-500 whitespace-nowrap">${rango}</td>
+            <td class="py-3 px-4 text-right font-bold text-sky-700 whitespace-nowrap">${Number(r.horas).toFixed(1)} h</td>
+            <td class="py-3 px-4 text-xs text-slate-600">${escapeHtml(r.nota || "-")}</td>
+            <td class="py-3 px-4 text-center">
+              <button onclick="removeItem('tiempo', '${r.id}')" class="text-slate-400 hover:text-rose-600 p-1">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function addPendiente(e) {
+      e.preventDefault();
+      const tarea = document.getElementById("penTarea").value.trim();
+      const fecha = document.getElementById("penFecha").value;
+      const item = {
+        id: uid(),
+        tarea,
+        fecha,
+        rubro: document.getElementById("penRubro").value,
+        completado: false
+      };
+      await persistItem("pendientes", item);
+      document.getElementById("penTarea").value = "";
+      showToast(`Guardado: Pendiente "${tarea}" (${fecha})`);
+    }
+
+    async function togglePendiente(id) {
+      const item = data.pendientes.find(x => x.id === id);
+      if (!item) return;
+      item.completado = !item.completado;
+      await persistItem("pendientes", item);
+    }
+
+    function setFiltroPend(mode) {
+      filtroPendiente = mode;
+      document.getElementById("btnPenActivos").className = mode === "ACTIVOS"
+        ? "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white"
+        : "px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-600";
+      document.getElementById("btnPenHechos").className = mode === "HECHOS"
+        ? "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white"
+        : "px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-600";
+      renderPendientes();
+    }
+
+    function renderPendientes() {
+      const hoy = todayISO();
+      const list = data.pendientes
+        .filter(x => filtroPendiente === "ACTIVOS" ? !x.completado : Boolean(x.completado))
+        .sort((a, b) => (a.fecha || "").localeCompare(b.fecha || ""));
+
+      const cont = document.getElementById("listaPendientes");
+      if (!list.length) {
+        cont.innerHTML = `<div class="py-10 text-center text-xs text-slate-400">No hay pendientes en esta lista.</div>`;
+        return;
+      }
+
+      cont.innerHTML = list.map(p => {
+        const vencido = !p.completado && p.fecha < hoy;
+        const esHoy = !p.completado && p.fecha === hoy;
+        return `
+          <div class="p-4 flex items-center justify-between gap-3 hover:bg-slate-50">
+            <div class="flex items-start gap-3">
+              <button onclick="togglePendiente('${p.id}')" class="mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center ${p.completado ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300 bg-white"}">
+                ${p.completado ? '<i class="fa-solid fa-check text-xs"></i>' : ""}
+              </button>
+              <div>
+                <p class="text-sm font-semibold ${p.completado ? "line-through text-slate-400" : "text-slate-900"}">${escapeHtml(p.tarea)}</p>
+                <div class="flex flex-wrap items-center gap-2 mt-1 text-xs">
+                  <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">${p.rubro}</span>
+                  <span class="text-slate-500"><i class="fa-regular fa-calendar mr-1"></i>Ejecución: ${p.fecha}</span>
+                  ${vencido ? '<span class="px-2 py-0.5 rounded bg-rose-600 text-white text-[10px] font-bold">Vencido</span>' : ""}
+                  ${esHoy ? '<span class="px-2 py-0.5 rounded bg-amber-500 text-white text-[10px] font-bold">Hoy</span>' : ""}
+                </div>
+              </div>
+            </div>
+            <button onclick="removeItem('pendientes', '${p.id}')" class="text-slate-400 hover:text-rose-600 p-1.5">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderKPIs() {
+      const hoy = todayISO();
+      const entra = data.ingresos.reduce((a, b) => a + Number(b.monto || 0), 0);
+      const sale = data.egresos.reduce((a, b) => a + Number(b.monto || 0), 0);
+      const bal = entra - sale;
+
+      const tHoy = data.tiempo.filter(x => x.fecha === hoy).reduce((a, b) => a + Number(b.horas || 0), 0);
+      const tAcum = data.tiempo.reduce((a, b) => a + Number(b.horas || 0), 0);
+
+      const activos = data.pendientes.filter(x => !x.completado);
+      const urgentes = activos.filter(x => x.fecha <= hoy);
+
+      const { cajaDisp, totalCajaYBancos } = computeSaldosConsolidados();
+      const fijosPend = (data.pagosFijos || []).filter(x => !x.pagado).reduce((a, b) => a + Number(b.monto || 0), 0);
+
+      document.getElementById("kpiEntra").textContent = money(entra);
+      document.getElementById("kpiSale").textContent = money(sale);
+      const balEl = document.getElementById("kpiBalance");
+      balEl.textContent = money(bal);
+      balEl.className = `text-2xl font-extrabold mt-2 ${bal >= 0 ? "text-indigo-600" : "text-rose-600"}`;
+
+      document.getElementById("kpiTiempoHoy").textContent = `${tHoy.toFixed(1)} h`;
+      document.getElementById("kpiTiempoAcum").textContent = `Acumulado: ${tAcum.toFixed(1)} h`;
+
+      document.getElementById("kpiPendientes").textContent = activos.length;
+      document.getElementById("kpiPendientesHoy").textContent = `${urgentes.length} para hoy o vencidos`;
+
+      document.getElementById("kpiBancosTotal").textContent = money(totalCajaYBancos);
+      document.getElementById("kpiFijosPend").textContent = `Caja: ${money(cajaDisp)} · Fijos: ${money(fijosPend)}`;
+    }
+
+    /* ==================== MÓDULO 5: SALDOS BANCOS Y OBLIGACIONES FIJAS ==================== */
+    async function saveCajaDisp() {
+      const input = document.getElementById("cajaDispInput");
+      const val = parseMiles(input.value);
+      await persistItem("bancos", { id: "caja_disp", saldo: val });
+      input.value = "";
+      showToast(`Guardado: Saldo Caja (Efectivo) ${money(val)}`);
+    }
+
+    async function saveBancolombiaDisp() {
+      const input = document.getElementById("bancolombiaDispInput");
+      const val = parseMiles(input.value);
+      await persistItem("bancos", { id: "bancolombia_disp", saldo: val });
+      input.value = "";
+      showToast(`Guardado: Disponible Bancolombia ${money(val)}`);
+    }
+
+    async function addBolsillo(e) {
+      e.preventDefault();
+      const nombre = document.getElementById("bolsilloNombre").value.trim();
+      const monto = parseMiles(document.getElementById("bolsilloMonto").value);
+      const existente = (data.bolsillos || []).find(b => b.nombre.toLowerCase() === nombre.toLowerCase());
+      await persistItem("bolsillos", {
+        id: existente ? existente.id : uid(),
+        nombre,
+        monto
+      });
+      document.getElementById("bolsilloNombre").value = "";
+      document.getElementById("bolsilloMonto").value = "";
+      showToast(`Guardado: Bolsillo ${nombre} (${money(monto)})`);
+    }
+
+    async function updateBolsilloMonto(id, nuevoMonto) {
+      const b = (data.bolsillos || []).find(x => x.id === id);
+      if (!b) return;
+      b.monto = parseMiles(nuevoMonto);
+      await persistItem("bolsillos", b);
+      showToast(`Guardado: Bolsillo ${b.nombre} (${money(b.monto)})`);
+    }
+
+    async function saveNuDisp() {
+      const input = document.getElementById("nuDispInput");
+      const val = parseMiles(input.value);
+      await persistItem("bancos", { id: "nu_disp", saldo: val });
+      input.value = "";
+      showToast(`Guardado: Disponible Banco NU ${money(val)}`);
+    }
+
+    async function addCajitaNu(e) {
+      e.preventDefault();
+      const nombre = document.getElementById("cajitaNombre").value.trim();
+      const monto = parseMiles(document.getElementById("cajitaMonto").value);
+      const existente = (data.cajitasNu || []).find(c => c.nombre.toLowerCase() === nombre.toLowerCase());
+      await persistItem("cajitasNu", {
+        id: existente ? existente.id : uid(),
+        nombre,
+        monto
+      });
+      document.getElementById("cajitaNombre").value = "";
+      document.getElementById("cajitaMonto").value = "";
+      showToast(`Guardado: Cajita NU ${nombre} (${money(monto)})`);
+    }
+
+    async function addPagoFijo(e) {
+      e.preventDefault();
+      const nombre = document.getElementById("fijoNombre").value.trim();
+      const monto = parseMiles(document.getElementById("fijoMonto").value);
+      const item = {
+        id: uid(),
+        nombre,
+        monto,
+        dia: parseInt(document.getElementById("fijoDia").value, 10) || 1,
+        pagado: false
+      };
+      await persistItem("pagosFijos", item);
+      document.getElementById("fijoNombre").value = "";
+      document.getElementById("fijoMonto").value = "";
+      document.getElementById("fijoDia").value = "";
+      showToast(`Guardado: Pago fijo ${nombre} (${money(monto)})`);
+    }
+
+    async function saveBancolombiaDisp() {
+      const val = parseMiles(document.getElementById("bancolombiaDispInput").value);
+      await persistItem("bancos", { id: "bancolombia_disp", saldo: val });
+      showToast("Saldo disponible Bancolombia actualizado");
+    }
+
+    async function addBolsillo(e) {
+      e.preventDefault();
+      const nombre = document.getElementById("bolsilloNombre").value.trim();
+      const monto = parseMiles(document.getElementById("bolsilloMonto").value);
+      const existente = (data.bolsillos || []).find(b => b.nombre.toLowerCase() === nombre.toLowerCase());
+      await persistItem("bolsillos", {
+        id: existente ? existente.id : uid(),
+        nombre,
+        monto
+      });
+      document.getElementById("bolsilloNombre").value = "";
+      document.getElementById("bolsilloMonto").value = "";
+      showToast("Bolsillo Bancolombia guardado");
+    }
+
+    async function updateBolsilloMonto(id, nuevoMonto) {
+      const b = (data.bolsillos || []).find(x => x.id === id);
+      if (!b) return;
+      b.monto = parseMiles(nuevoMonto);
+      await persistItem("bolsillos", b);
+      showToast("Bolsillo actualizado");
+    }
+
+    async function saveNuDisp() {
+      const val = parseMiles(document.getElementById("nuDispInput").value);
+      await persistItem("bancos", { id: "nu_disp", saldo: val });
+      showToast("Saldo Banco NU actualizado");
+    }
+
+    async function addCajitaNu(e) {
+      e.preventDefault();
+      const nombre = document.getElementById("cajitaNombre").value.trim();
+      const monto = parseMiles(document.getElementById("cajitaMonto").value);
+      const existente = (data.cajitasNu || []).find(c => c.nombre.toLowerCase() === nombre.toLowerCase());
+      await persistItem("cajitasNu", {
+        id: existente ? existente.id : uid(),
+        nombre,
+        monto
+      });
+      document.getElementById("cajitaNombre").value = "";
+      document.getElementById("cajitaMonto").value = "";
+      showToast("Cajita NU guardada");
+    }
+
+    async function addPagoFijo(e) {
+      e.preventDefault();
+      const item = {
+        id: uid(),
+        nombre: document.getElementById("fijoNombre").value.trim(),
+        monto: parseMiles(document.getElementById("fijoMonto").value),
+        dia: parseInt(document.getElementById("fijoDia").value, 10) || 1,
+        pagado: false
+      };
+      await persistItem("pagosFijos", item);
+      document.getElementById("fijoNombre").value = "";
+      document.getElementById("fijoMonto").value = "";
+      document.getElementById("fijoDia").value = "";
+      showToast("Pago fijo agregado");
+    }
+
+    async function togglePagoFijo(id) {
+      const item = (data.pagosFijos || []).find(x => x.id === id);
+      if (!item) return;
+      item.pagado = !item.pagado;
+      await persistItem("pagosFijos", item);
+      showToast(item.pagado ? "Marcado como pagado" : "Marcado como pendiente");
+    }
+
+    async function updatePagoFijoMonto(id, val) {
+      const item = (data.pagosFijos || []).find(x => x.id === id);
+      if (!item) return;
+      item.monto = parseMiles(val);
+      await persistItem("pagosFijos", item);
+      showToast(`Guardado: ${item.nombre} (${money(item.monto)})`);
+    }
+
+    async function resetMesFijos() {
+      for (const item of (data.pagosFijos || [])) {
+        item.pagado = false;
+        await persistItem("pagosFijos", item);
+      }
+      showToast("Pagos fijos reiniciados para el nuevo mes");
+    }
+
+    function renderSaldos() {
+      // Bancolombia
+      const bcDisp = Number((data.bancos || []).find(x => x.id === "bancolombia_disp")?.saldo || 0);
+      const bolsillos = data.bolsillos || [];
+      const bcBols = bolsillos.reduce((a, b) => a + Number(b.monto || 0), 0);
+      document.getElementById("totalBancolombia").textContent = money(bcDisp + bcBols);
+
+      const contBols = document.getElementById("listaBolsillos");
+      if (!bolsillos.length) {
+        contBols.innerHTML = `<p class="text-xs text-slate-400 py-3 text-center">Aún no has creado bolsillos en Bancolombia.</p>`;
+      } else {
+        contBols.innerHTML = bolsillos.map(b => `
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-slate-800 truncate"><i class="fa-solid fa-folder text-amber-500 mr-1.5"></i>${escapeHtml(b.nombre)}</p>
+              <p class="text-xs font-semibold text-slate-500">${money(b.monto)}</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <input type="text" inputmode="numeric" value="${formatMilesStr(b.monto)}" oninput="formatMilesInput(this)" onchange="updateBolsilloMonto('${b.id}', this.value)" class="w-28 rounded-lg border border-slate-300 px-2 py-1 text-xs text-right font-semibold">
+              <button onclick="removeItem('bolsillos', '${b.id}')" class="text-slate-400 hover:text-rose-600 p-1">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      // Banco NU
+      const nuDisp = Number((data.bancos || []).find(x => x.id === "nu_disp")?.saldo || 0);
+      const cajitas = data.cajitasNu || [];
+      const nuCaj = cajitas.reduce((a, b) => a + Number(b.monto || 0), 0);
+      document.getElementById("totalBancoNu").textContent = money(nuDisp + nuCaj);
+
+      const contCaj = document.getElementById("listaCajitasNu");
+      if (!cajitas.length) {
+        contCaj.innerHTML = `<p class="text-xs text-slate-400 py-3 text-center">Sin cajitas adicionales en Banco NU.</p>`;
+      } else {
+        contCaj.innerHTML = cajitas.map(c => `
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-bold text-slate-800"><i class="fa-solid fa-piggy-bank text-indigo-500 mr-1.5"></i>${escapeHtml(c.nombre)}</p>
+              <p class="text-xs font-semibold text-indigo-600">${money(c.monto)}</p>
+            </div>
+            <button onclick="removeItem('cajitasNu', '${c.id}')" class="text-slate-400 hover:text-rose-600 p-1">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </div>
+        `).join("");
+      }
+
+      // Pagos Fijos
+      const fijos = data.pagosFijos || [];
+      const totalPend = fijos.filter(x => !x.pagado).reduce((a, b) => a + Number(b.monto || 0), 0);
+      document.getElementById("totalFijosPendiente").textContent = money(totalPend);
+
+      const contFijos = document.getElementById("listaPagosFijos");
+      if (!fijos.length) {
+        contFijos.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">Sin obligaciones fijas registradas.</p>`;
+      } else {
+        contFijos.innerHTML = fijos.map(f => `
+          <div class="py-3 flex items-center justify-between gap-2">
+            <div class="flex items-start gap-2.5 min-w-0">
+              <button onclick="togglePagoFijo('${f.id}')" class="mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 ${f.pagado ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300 bg-white"}">
+                ${f.pagado ? '<i class="fa-solid fa-check text-xs"></i>' : ""}
+              </button>
+              <div class="min-w-0">
+                <p class="text-xs font-bold truncate ${f.pagado ? "line-through text-slate-400" : "text-slate-900"}">${escapeHtml(f.nombre)}</p>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <span class="text-[11px] text-slate-500">Día ${f.dia || "-"}</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${f.pagado ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"}">
+                    ${f.pagado ? "Pagado" : "Pendiente"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <input type="text" inputmode="numeric" value="${f.monto ? formatMilesStr(f.monto) : ""}" oninput="formatMilesInput(this)" onchange="updatePagoFijoMonto('${f.id}', this.value)" placeholder="Valor" class="w-28 rounded-lg border border-slate-300 px-2 py-1 text-xs text-right font-bold">
+              <button onclick="removeItem('pagosFijos', '${f.id}')" class="text-slate-400 hover:text-rose-600 p-1">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          </div>
+        `).join("");
+      }
+    }
+
+    function renderAll() {
+      renderKPIs();
+      renderIngresos();
+      renderEgresos();
+      renderTiempo();
+      renderPendientes();
+      renderSaldos();
+    }
+
+    function saveFirebaseConfig() {
+      const raw = document.getElementById("firebaseConfigInput").value.trim();
+      if (!raw) {
+        showToast("Pega primero la configuración JSON");
+        return;
+      }
+      try {
+        JSON.parse(raw);
+      } catch (_) {
+        showToast("El formato JSON no es válido (revisa las comillas)");
+        return;
+      }
+      localStorage.setItem(FB_CONFIG_KEY, raw);
+      if (window._connectCloud) {
+        window._connectCloud(raw);
+      }
+      closeDbModal();
+      showToast("Configuración guardada");
+    }
+
+    function clearFirebaseConfig() {
+      localStorage.removeItem(FB_CONFIG_KEY);
+      document.getElementById("firebaseConfigInput").value = "";
+      if (window._disconnectCloud) window._disconnectCloud();
+      document.getElementById("dbStatusBadge").className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200";
+      document.getElementById("dbStatusDot").className = "w-2 h-2 rounded-full bg-amber-500";
+      document.getElementById("dbStatusText").textContent = "Memoria Local (Gratis)";
+      closeDbModal();
+      showToast("Usando memoria local del navegador");
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const hoy = todayISO();
+      ["ingFecha", "egrFecha", "tieFecha", "tieDiaResumen", "penFecha"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = hoy;
+      });
+
+      try {
+        const saved = localStorage.getItem(LOCAL_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          data = Object.assign({}, data, parsed);
+          if (!data.pagosFijos || !data.pagosFijos.length) {
+            data.pagosFijos = [
+              { id: "fijo_cel_paulina", nombre: "Celular Paulina", monto: 0, dia: 15, pagado: false },
+              { id: "fijo_cel_mio", nombre: "Celular mío", monto: 0, dia: 15, pagado: false },
+              { id: "fijo_tc_nu", nombre: "Deuda Tarjeta Crédito NU", monto: 0, dia: 20, pagado: false }
+            ];
+          }
+        }
+      } catch (_) {}
+
+      renderAll();
+    });
+
+    // Verificación numérica en consola al cargar para validar saldos, miles y movimientos
+    (function runNumericSelfTest() {
+      const sampleSnapshot = JSON.parse(JSON.stringify(data));
+      sampleSnapshot.bancos = [
+        { id: "caja_disp", saldo: 250000 },
+        { id: "bancolombia_disp", saldo: 1200000 },
+        { id: "nu_disp", saldo: 800000 }
+      ];
+      sampleSnapshot.bolsillos = [{ id: "b1", nombre: "ContAssist", monto: 9414462 }];
+      sampleSnapshot.cajitasNu = [{ id: "c1", nombre: "Emergencia", monto: 500000 }];
+      const expectedTotalCajaYBancos = 250000 + 1200000 + 9414462 + 800000 + 500000; // 12.164.462
+      console.assert(parseMiles("9.414.462") === 9414462, "Error parseMiles");
+      console.assert(formatMilesStr(12164462) === "12.164.462", "Error formatMilesStr");
+      console.assert(expectedTotalCajaYBancos === 12164462, "Error consolidación Caja y Bancos");
+    })();
+  </script>
+
+  <!-- Módulo Firebase Firestore (Sincronización en la Nube) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    let db = null;
+    let unsubs = [];
+
+    window._disconnectCloud = function() {
+      unsubs.forEach(fn => { try { fn(); } catch (_) {} });
+      unsubs = [];
+      db = null;
+    };
+
+    window._cloudSave = async function(colName, item) {
+      if (!db) return;
+      try {
+        await setDoc(doc(db, "control_integral", colName, "items", item.id), item);
+      } catch (err) {
+        console.error("Error Firestore save:", err);
+      }
+    };
+
+    window._cloudDelete = async function(colName, id) {
+      if (!db) return;
+      try {
+        await deleteDoc(doc(db, "control_integral", colName, "items", id));
+      } catch (err) {
+        console.error("Error Firestore delete:", err);
+      }
+    };
+
+    window._connectCloud = function(rawConfig) {
+      try {
+        window._disconnectCloud();
+        const parsed = JSON.parse(rawConfig);
+        const app = initializeApp(parsed);
+        db = getFirestore(app);
+
+        document.getElementById("dbStatusBadge").className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200";
+        document.getElementById("dbStatusDot").className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+        document.getElementById("dbStatusText").textContent = "Nube Activa (Firestore)";
+
+        ["ingresos", "egresos", "tiempo", "pendientes", "bancos", "bolsillos", "cajitasNu", "pagosFijos"].forEach(colName => {
+          const u = onSnapshot(collection(db, "control_integral", colName, "items"), snap => {
+            const items = [];
+            snap.forEach(d => items.push(d.data()));
+            if (items.length > 0 || !["pagosFijos", "bancos"].includes(colName)) {
+              data[colName] = items;
+              localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
+              renderAll();
+            }
+          });
+          unsubs.push(u);
+        });
+        showToast("Conectado a Firestore en la nube");
+      } catch (err) {
+        console.error("Error conectando Firebase:", err);
+        showToast("Error al conectar con Firebase");
+      }
+    };
+
+    const savedFb = localStorage.getItem(FB_CONFIG_KEY);
+    if (savedFb) {
+      window._connectCloud(savedFb);
+    }
+  </script>
+</body>
+</html>
